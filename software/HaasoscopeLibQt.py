@@ -872,8 +872,8 @@ class Haasoscope():
                     self.xydata[thechan][1]=ydatanew
                 if self.domeasure:
                     self.Vmean[thechan] = np.mean(ydatanew)
-                    self.Vmin[thechan] = ydatanew.min
-                    self.Vmax[thechan] = ydatanew.max
+                    self.Vmin[thechan] = np.amin(ydatanew)
+                    self.Vmax[thechan] = np.amix(ydatanew)
                     self.Vrms[thechan] = np.sqrt(np.mean((ydatanew-self.Vmean[thechan])**2))
                     gain=1
                     if self.gain[thechan]==0: gain*=10
