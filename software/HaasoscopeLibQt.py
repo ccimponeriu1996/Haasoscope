@@ -114,7 +114,9 @@ class Haasoscope():
         self.domeasure=True # whether to calculate measurements
         self.Vrms=np.zeros(num_board*num_chan_per_board, dtype=float) # the Vrms for each channel
         self.Vmean=np.zeros(num_board*num_chan_per_board, dtype=float) # the Vmean for each channel
-        
+        self.Vmin=np.zeros(num_board*num_chan_per_board, dtype=float) # the Vmin for each channel
+        self.Vmax=np.zeros(num_board*num_chan_per_board, dtype=float) # the Vmax for each channel
+
         #These hold the state of the IO expanders
         self.a20= int('f0',16) # oversamp (set bits 0,1 to 0 to send 0->2 and 1->3) / gain (set second char to 0 for low gain)
         self.b20= int('0f',16)  # shdn (set first char to 0 to turn on) / ac coupling (set second char to f for DC, 0 for AC)
@@ -621,6 +623,10 @@ class Haasoscope():
         if self.domeasure:
             if abs(self.Vmean[self.selectedchannel])>.9: text +="\nMean={0:1.3g} V".format(self.Vmean[self.selectedchannel])
             else: text +="\nMean={0:1.3g} mV".format(1000.*self.Vmean[self.selectedchannel])
+            if abs(self.Vmin[self.selectedchannel])>.9: text +="\nMin={0:1.3g} V".format(self.Vmin[self.selectedchannel])
+            else: text +="\nVmin={0:1.3g} mV".format(1000.*self.Vmin[self.selectedchannel])
+            if abs(self.Vmax[self.selectedchannel])>.9: text +="\nMax={0:1.3g} V".format(self.Vmax[self.selectedchannel])
+            else: text +="\nVmax={0:1.3g} mV".format(1000.*self.Vmax[self.selectedchannel])
             if abs(self.Vrms[self.selectedchannel])>.9: text +="\nRMS={0:1.3g} V".format(self.Vrms[self.selectedchannel])
             else: text +="\nRMS={0:1.3g} mV".format(1000.*self.Vrms[self.selectedchannel])        
         if self.dogetotherdata:
@@ -866,6 +872,8 @@ class Haasoscope():
                     self.xydata[thechan][1]=ydatanew
                 if self.domeasure:
                     self.Vmean[thechan] = np.mean(ydatanew)
+                    self.Vmin[thechan] = ydatanew.min
+                    self.Vmax[thechan] = ydatanew.max
                     self.Vrms[thechan] = np.sqrt(np.mean((ydatanew-self.Vmean[thechan])**2))
                     gain=1
                     if self.gain[thechan]==0: gain*=10

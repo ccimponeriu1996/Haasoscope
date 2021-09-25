@@ -11,3 +11,5 @@ eagle/max10adc*.pro
 software/*.pyc
 software/__*
 .idea
+software/.vscode/settings.json
+.vscode
